@@ -814,6 +814,14 @@ missing frames.  Indeed, when one opens the file with the default
     sample_shape = (2, 1)
     >>> fh.close()
 
-.. testcleanup::
-
-    >>> Path("corrupt.vdif").unlink()
+Changing scaling when decoding data
+===================================
+In vdif, mark4 and mark5b data format, the look up tables for their decoding are defined using `baseband.base.encoding.decoder_levels:`. This involves some scaling, and can be manually changed in a hacky way if is needed for your purposes. By default it looks like this ::
+        decoder_levels = {
+        1: np.array([-1.0, 1.0], dtype=np.float32),
+        2: np.array([-OPTIMAL_2BIT_HIGH, -1.0, 1.0, OPTIMAL_2BIT_HIGH],
+                                dtype=np.float32),
+        4: (np.arange(16, dtype=np.float32) - 8.) / FOUR_BIT_1_SIGMA)
+                                   
+To remove these extra scalings, one can simply remove the OPTIMAL_2BIT_HIGH or FOUR_BIT_ONE_SIGMA. 
+.. testcleanup:: >>> Path("corrupt.vdif").unlink()
