@@ -822,8 +822,7 @@ missing frames.  Indeed, when one opens the file with the default
 Changing scaling when decoding data
 ===================================
 
-In vdif, mark4 and mark5b data formats, the lookup tables for their decoding are defined using 
-:py:data:`baseband.base.encoding.decoder_levels`. This involves some scaling, and can be manually 
+In vdif, mark4 and mark5b data formats, the data are decoded using lookup tables, which are the same as those used by mark4access. These are defined in  :py:data:`baseband.base.encoding.decoder_levels`. This involves some scaling, and can be manually 
 changed in a hacky way if needed for your purposes. By default it looks like this::
 
     decoder_levels = {
@@ -834,4 +833,9 @@ changed in a hacky way if needed for your purposes. By default it looks like thi
     }
 
 To remove these extra scalings, one can simply remove the ``OPTIMAL_2BIT_HIGH`` or 
-``FOUR_BIT_1_SIGMA``.
+``FOUR_BIT_1_SIGMA``. For instance, to have 4-bit data return values between -8 and 7,
+you can do the following prior to reading a file::
+
+    baseband.base.encoding.decoder_levels[4] = np.arange(16, dtype=np.float32) - 8.
+
+
